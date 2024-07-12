@@ -25,6 +25,8 @@ export const useGameStore = defineStore("gameStore", () => {
   const firstAidKit = ref<IFirstAidKit | null>(null);
   const nextFirstAidKitTime = ref<number | null>(null);
   let meteorId = 0;
+  const gameStartTime = ref(Date.now());
+  const speedGame = ref(1);
 
   // метеор
 
@@ -40,7 +42,7 @@ export const useGameStore = defineStore("gameStore", () => {
         y: -meteorSize,
         hasParachute: false,
         clickCount: 0,
-        speed: 1 + Math.random() * 1,
+        speed: (1 + Math.random() * 1) * speedGame.value,
         opacity: 1,
       });
     }
@@ -135,6 +137,7 @@ export const useGameStore = defineStore("gameStore", () => {
       updateFirstAidKitTimer();
       spawnFirstAidKit();
       moveFirstAidKit();
+      updateSpeedGame();
     }
   };
 
@@ -143,6 +146,13 @@ export const useGameStore = defineStore("gameStore", () => {
     lives.value = 5;
     meteors.value = [];
     meteorId = 0;
+    gameStartTime.value = Date.now();
+    speedGame.value = 1;
+  };
+
+  const updateSpeedGame = () => {
+    const elapsedMinutes = Math.floor((Date.now() - gameStartTime.value) / 60000);
+    speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 15%
   };
 
   return {
@@ -159,5 +169,6 @@ export const useGameStore = defineStore("gameStore", () => {
     spawnFirstAidKit,
     moveFirstAidKit,
     boostHealthPoints,
+    updateSpeedGame,
   };
 });
