@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-interface Meteor {
+interface IMeteor {
   id: number;
   isBig: boolean;
   x: number;
@@ -12,16 +12,21 @@ interface Meteor {
   opacity: number;
 }
 
+interface IFirstAidKit {
+  x: number;
+  y: number;
+}
+
 export const useGameStore = defineStore("gameStore", () => {
   const playerName = ref<string>("");
   const score = ref<number>(0);
   const lives = ref<number>(5);
-  const meteors = ref<Meteor[]>([]);
+  const meteors = ref<IMeteor[]>([]);
+  const firstAidKit = ref<IFirstAidKit | null>(null);
+  const nextFirstAidKitTime = ref<number | null>(null);
   let meteorId = 0;
 
-  const setPlayerName = (name: string) => {
-    playerName.value = name;
-  };
+  // метеор
 
   const spawnMeteor = () => {
     if (meteors.value.length < 10 && Math.random() < 0.02) {
@@ -57,6 +62,8 @@ export const useGameStore = defineStore("gameStore", () => {
     });
   };
 
+  // парашют
+
   const increaseCountForParachute = (id: number) => {
     const meteor = meteors.value.find((m) => m.id === id);
     if (meteor && !meteor.hasParachute) {
@@ -72,10 +79,62 @@ export const useGameStore = defineStore("gameStore", () => {
     }
   };
 
+  // аптечка
+
+  const updateFirstAidKitTimer = () => {
+    if (lives.value < 3 && !firstAidKit.value && !nextFirstAidKitTime.value) {
+      nextFirstAidKitTime.value =
+        Date.now() + 15000 + Math.floor(Math.random() * 30001); // дата + 15 сек + рандомно до 30 сек включительно = от 15 до 45 сек включительно
+    }
+  };
+
+  const spawnFirstAidKit = () => {
+    if (
+      lives.value < 3 &&
+      !firstAidKit.value &&
+      nextFirstAidKitTime.value &&
+      Date.now() >= nextFirstAidKitTime.value
+    ) {
+      firstAidKit.value = {
+        x: Math.random() * (window.innerWidth - 50), // 50px - высота аптечки
+        y: -50,
+      };
+      nextFirstAidKitTime.value = null;
+    }
+  };
+
+  const moveFirstAidKit = () => {
+    if (firstAidKit.value) {
+      firstAidKit.value.y += 1; // допустим 1 стандартная скорость аптечки
+      if (firstAidKit.value.y > window.innerHeight) {
+        firstAidKit.value = null;
+        updateFirstAidKitTimer();
+      }
+    }
+  };
+
+  const boostHealthPoints = () => {
+    if (firstAidKit.value) {
+      const countHealthPoints = Math.floor(Math.random() * 3) + 1;
+      lives.value = Math.min(lives.value + countHealthPoints, 5);
+      firstAidKit.value = null;
+      updateFirstAidKitTimer();
+    }
+  };
+
+  // игра
+
+  const setPlayerName = (name: string) => {
+    playerName.value = name;
+  };
+
   const gameStep = () => {
     if (lives.value > 0) {
       spawnMeteor();
       moveMeteors();
+      updateFirstAidKitTimer();
+      spawnFirstAidKit();
+      moveFirstAidKit();
     }
   };
 
@@ -91,10 +150,14 @@ export const useGameStore = defineStore("gameStore", () => {
     score,
     lives,
     meteors,
+    firstAidKit,
     setPlayerName,
     resetGame,
     spawnMeteor,
     gameStep,
     increaseCountForParachute,
+    spawnFirstAidKit,
+    moveFirstAidKit,
+    boostHealthPoints,
   };
 });

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   isBig: boolean;
 }>();
 </script>

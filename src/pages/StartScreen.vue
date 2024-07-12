@@ -1,11 +1,9 @@
 <template>
-   <StartMenu />
+  <StartMenu />
 </template>
 
 <script setup lang="ts">
-import StartMenu from '@/components/StartMenu.vue';
+import StartMenu from "@/components/StartMenu.vue";
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

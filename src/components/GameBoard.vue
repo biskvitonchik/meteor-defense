@@ -11,6 +11,11 @@
       :has-parachute="meteor.hasParachute"
       :opacity="meteor.opacity"
     />
+    <FirstAidKit
+      v-if="gameStore.firstAidKit"
+      :x="gameStore.firstAidKit.x"
+      :y="gameStore.firstAidKit.y"
+    />
   </div>
 </template>
 
@@ -19,6 +24,7 @@ import { useGameStore } from "@/stores/gameStore";
 import { onMounted } from "vue";
 import InfoPanel from "./infoPanel/InfoPanel.vue";
 import Meteor from "@/components/gameObjects/Meteor.vue";
+import FirstAidKit from "@/components/gameObjects/FirstAidKit.vue";
 
 const gameStore = useGameStore();
 
