@@ -1,4 +1,3 @@
-import FirstAidKit from "@/components/gameObjects/FirstAidKit.vue";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 

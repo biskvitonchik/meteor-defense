@@ -1,8 +1,8 @@
 <template>
-  <div
+  <q-page
     :class="['meteor', { 'meteor--big': isBig }]"
     :style="{ top: `${y}px`, left: `${x}px` }"
-  ></div>
+  ></q-page>
 </template>
 
 <script setup lang="ts">
