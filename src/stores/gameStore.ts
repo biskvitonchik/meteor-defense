@@ -9,6 +9,7 @@ interface Meteor {
   hasParachute: boolean;
   clickCount: number;
   speed: number;
+  opacity: number;
 }
 
 export const useGameStore = defineStore("gameStore", () => {
@@ -24,31 +25,51 @@ export const useGameStore = defineStore("gameStore", () => {
 
   const spawnMeteor = () => {
     if (meteors.value.length < 10 && Math.random() < 0.02) {
-        
-        const isBig = Math.random() > 0.7;
-        const meteorSize = isBig ? 80 : 50;
-        const x = Math.random() * (window.innerWidth - meteorSize);
-        meteors.value.push({
-          id: meteorId++,
-          isBig,
-          x,
-          y: -meteorSize,
-          hasParachute: false,
-          clickCount: 0,
-          speed: 0.5 + Math.random() * 0.5,
-        });
+      const isBig = Math.random() > 0.7;
+      const meteorSize = isBig ? 80 : 50;
+      const x = Math.random() * (window.innerWidth - meteorSize);
+      meteors.value.push({
+        id: meteorId++,
+        isBig,
+        x,
+        y: -meteorSize,
+        hasParachute: false,
+        clickCount: 0,
+        speed: 1 + Math.random() * 1,
+        opacity: 1,
+      });
     }
   };
 
   const moveMeteors = () => {
     meteors.value = meteors.value.filter((meteor) => {
       meteor.y += meteor.speed;
-      if (meteor.y > window.innerHeight) {
+      if (meteor.hasParachute) {
+        meteor.opacity -= 0.002;
+        if (meteor.opacity <= 0) {
+          return false;
+        }
+      } else if (meteor.y > window.innerHeight) {
         lives.value -= meteor.isBig ? 2 : 1;
         return false;
       }
       return true;
     });
+  };
+
+  const increaseCountForParachute = (id: number) => {
+    const meteor = meteors.value.find((m) => m.id === id);
+    if (meteor && !meteor.hasParachute) {
+      meteor.clickCount++;
+      if (
+        (meteor.isBig && meteor.clickCount >= 2) ||
+        (!meteor.isBig && meteor.clickCount >= 1)
+      ) {
+        meteor.hasParachute = true;
+        meteor.speed /= 2;
+        score.value += meteor.isBig ? 15 : 5;
+      }
+    }
   };
 
   const gameStep = () => {
@@ -74,5 +95,6 @@ export const useGameStore = defineStore("gameStore", () => {
     resetGame,
     spawnMeteor,
     gameStep,
+    increaseCountForParachute,
   };
 });

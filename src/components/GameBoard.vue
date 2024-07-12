@@ -1,15 +1,17 @@
 <template>
-  <q-page>
+  <div class="container">
     <InfoPanel />
     <Meteor
       v-for="meteor in gameStore.meteors"
       :key="meteor.id"
+      :id="meteor.id"
       :is-big="meteor.isBig"
       :x="meteor.x"
       :y="meteor.y"
       :has-parachute="meteor.hasParachute"
+      :opacity="meteor.opacity"
     />
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -31,3 +33,12 @@ onMounted(() => {
   gameLoop = requestAnimationFrame(startGameLoop);
 });
 </script>
+
+<style scoped lang="scss">
+.contiuner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  outline: none;
+}
+</style>
