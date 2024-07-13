@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import StartScreen from '@/pages/StartScreen.vue'
 import GameScreen from '@/pages/GameScreen.vue'
-import ScoreScreen from '@/pages/ScoreScreen.vue'
+import ResultScreen from '@/pages/ResultScreen.vue'
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', name: 'Start', component: StartScreen },
   { path: '/game', name: 'Game', component: GameScreen },
-  { path: '/score', name: 'Score', component: ScoreScreen },
+  { path: '/results', name: 'Results', component: ResultScreen },
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/meteor-defense'),
   routes
 })
 

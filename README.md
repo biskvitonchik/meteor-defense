@@ -1,5 +1,76 @@
-# Vue 3 + Vite
+# Игра "Защити город от метеоритов"
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Описание проекта
+"Защити город от метеоритов" - это динамичная HTML-игра, разработанная на Vue 3 с использованием Composition API, TypeScript, SCSS и Pinia. Игрок должен защитить город от падающих метеоритов, прикрепляя к ним парашюты.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Правила игры
+
+- Метеориты падают с неба, бывают маленькие и большие.
+- Кликните 1 раз по маленькому метеориту или 2 раза по большому, чтобы прикрепить парашют.
+- За маленький метеорит получите 5 очков, за большой - 15 очков.
+- Пропущенный маленький метеорит отнимает 1 жизнь, большой - 2 жизни.
+- Скорость падения метеоритов увеличивается каждую минуту.
+- При менее 3 жизнях могут появляться аптечки, восстанавливающие 1-3 жизни.
+- Максимальное количество жизней - 5.
+
+## Установка и запуск проекта
+
+1. Убедитесь, что у вас установлен Node.js и npm.
+2. Установите зависимости:\
+`npm install`
+3. Запустите проект:\
+`npm run dev`
+
+## Структура проекта
+
+src/
+├── assets/
+├── components/
+│   ├── gameObjects/
+│   │   ├── FirstAidKit.vue
+│   │   ├── Meteor.vue
+│   │   └── Parachute.vue
+│   ├── infoPanel/
+│   │   ├── InfoPanel.vue
+│   │   ├── LifeCounter.vue
+│   │   ├── PlayerName.vue
+│   │   └── PlayerScore.vue
+│   └── resultBoard/
+│       ├── BtnGameAgain.vue
+│       ├── CurrentResult.vue
+│       ├── ResultBoard.vue
+│       └── ResultsTable.vue
+├── pages/
+│   ├── GameScreen.vue
+│   ├── ResultScreen.vue
+│   └── StartMenu.vue
+├── router/
+│   └── index.ts
+├── stores/
+│   └── gameStore.ts
+├── types/
+│   └── types.ts
+├── App.vue
+└── main.ts
+
+## Основные компоненты
+
+- StartMenu.vue: Стартовый экран с описанием игры и вводом имени игрока.
+- GameScreen.vue: Основной игровой экран.
+- ResultScreen.vue: Экран с результатами и таблицей рекордов.
+- gameStore.ts: Хранилище состояния игры с использованием Pinia.
+
+## Использованные технологии
+
+- Vue 3 (Composition API)
+- TypeScript
+- SCSS
+- Quasar UI
+- Pinia (для управления состоянием)
+- Vue Router
+- Vite (для сборки проекта)
+
+## Дополнительные функции
+
+Возможность поставить игру на паузу кнопкой "Пробел".
+Сохранение рекордов в localStorage.

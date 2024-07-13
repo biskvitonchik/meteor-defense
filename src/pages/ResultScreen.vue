@@ -1,9 +1,9 @@
 <template>
-  <StartMenu />
+  <ResultBoard />
 </template>
 
 <script setup lang="ts">
-import StartMenu from "@/components/StartMenu.vue";
+import ResultBoard from "@/components/resultBoard/ResultBoard.vue";
 </script>
 
 <style scoped lang="scss"></style>

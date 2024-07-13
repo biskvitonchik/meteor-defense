@@ -17,4 +17,5 @@ resolve: {
     "@": resolve(__dirname, "src")
   }
 },
+base: '/meteor-defense/'
 })
