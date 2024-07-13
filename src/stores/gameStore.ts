@@ -36,6 +36,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const isActiveGame = ref(false);
   const speedGame = ref(1);
   const gameResults = ref<IGameResult[]>([]);
+  const isPaused = ref(false);
 
   // Вычисляемые свойства
   const isGameOver = computed(() => lives.value <= 0);
@@ -46,7 +47,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const gameStep = () => {
-    if (isActiveGame.value && lives.value > 0) {
+    if (isActiveGame.value && !isPaused.value && lives.value > 0) {
       spawnMeteor();
       moveMeteors();
       updateFirstAidKitTimer();
@@ -60,6 +61,10 @@ export const useGameStore = defineStore("gameStore", () => {
     resetGame();
     isActiveGame.value = true;
     gameStartTime.value = Date.now();
+  };
+
+  const togglePause = () => {
+    isPaused.value = !isPaused.value;
   };
 
   const updateSpeedGame = () => {
@@ -206,12 +211,14 @@ export const useGameStore = defineStore("gameStore", () => {
     lives,
     meteors,
     firstAidKit,
+    isActiveGame,
     gameResults,
     isGameOver,
-    isActiveGame,
+    isPaused,
     setPlayerName,
     gameStep,
     startGame,
+    togglePause,
     updateSpeedGame,
     endGame,
     resetGame,
