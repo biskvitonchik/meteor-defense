@@ -55,7 +55,7 @@ const startGame = () => {
   max-width: 400px;
 }
 .container {
-  background-image: url("images/background-startScreen.jpg");
+  background-image: url("/images/background-startScreen.jpg");
   background-size: cover;
   background-position: center;
   width: 100%;

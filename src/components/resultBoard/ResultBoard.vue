@@ -4,7 +4,7 @@
       <CurrentResult />
       <q-separator />
       <ResultsTable />
-      <BtnGameAgain @click="playAgain"/>
+      <BtnGameAgain @click="playAgain" />
     </q-card>
   </q-page>
 </template>
@@ -26,13 +26,13 @@ const playAgain = () => {
 };
 
 onMounted(() => {
-  gameStore.loadResults()
-})
+  gameStore.loadResults();
+});
 </script>
 
 <style scoped lang="scss">
 .result-board {
-  background-image: url("images/background-game-over.jpg");
+  background-image: url("/images/background-game-over.jpg");
   background-size: cover;
   background-position: center;
 }
