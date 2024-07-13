@@ -44,6 +44,7 @@ const playerName = ref<string>("");
 
 const startGame = () => {
   gameStore.setPlayerName(playerName.value.trim());
+  gameStore.resetGame();
   playerName.value = "";
   router.push("/game");
 };

@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { useGameStore } from "@/stores/gameStore";
-import { onMounted, watch } from "vue";
+import { onMounted, onUnmounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import InfoPanel from "@/components/infoPanel/InfoPanel.vue";
 import Meteor from "@/components/gameObjects/Meteor.vue";
@@ -38,13 +38,20 @@ const startGameLoop = () => {
 };
 
 onMounted(() => {
+  gameStore.startGame();
   gameLoop = requestAnimationFrame(startGameLoop);
+});
+
+onUnmounted(() => {
+  cancelAnimationFrame(gameLoop);
+  gameStore.endGame;
 });
 
 watch(
   () => gameStore.isGameOver,
   () => {
     cancelAnimationFrame(gameLoop);
+    gameStore.endGame();
     gameStore.saveResult();
     router.push("/results");
   }

@@ -32,14 +32,61 @@ export const useGameStore = defineStore("gameStore", () => {
   const firstAidKit = ref<IFirstAidKit | null>(null);
   const nextFirstAidKitTime = ref<number | null>(null);
   let meteorId = 0;
-  const gameStartTime = ref(Date.now());
+  const gameStartTime = ref<number | null>(null);
+  const isActiveGame = ref(false);
   const speedGame = ref(1);
-
-  // Результаты игры
   const gameResults = ref<IGameResult[]>([]);
 
   // Вычисляемые свойства
   const isGameOver = computed(() => lives.value <= 0);
+
+  // Методы для управления игрой
+  const setPlayerName = (name: string) => {
+    playerName.value = name;
+  };
+
+  const gameStep = () => {
+    if (isActiveGame.value && lives.value > 0) {
+      spawnMeteor();
+      moveMeteors();
+      updateFirstAidKitTimer();
+      spawnFirstAidKit();
+      moveFirstAidKit();
+      updateSpeedGame();
+    }
+  };
+
+  const startGame = () => {
+    resetGame();
+    isActiveGame.value = true;
+    gameStartTime.value = Date.now();
+  };
+
+  const updateSpeedGame = () => {
+    if (gameStartTime.value) {
+      const elapsedMinutes = Math.floor(
+        (Date.now() - gameStartTime.value) / 60000
+      );
+      speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 15%
+    }
+  };
+
+  const endGame = () => {
+    isActiveGame.value = false;
+  };
+
+  const resetGame = () => {
+    score.value = 0;
+    lives.value = 5;
+    meteors.value = [];
+    meteorId = 0;
+    gameStartTime.value = null;
+    speedGame.value = 1;
+    firstAidKit.value = null;
+    nextFirstAidKitTime.value = null;
+    isActiveGame.value = false;
+    loadResults();
+  };
 
   // Методы для работы с метеорами
   const spawnMeteor = () => {
@@ -77,6 +124,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const increaseCountForParachute = (id: number) => {
+    if (!isActiveGame.value) return;
     const meteor = meteors.value.find((m) => m.id === id);
     if (meteor && !meteor.hasParachute) {
       meteor.clickCount++;
@@ -133,39 +181,6 @@ export const useGameStore = defineStore("gameStore", () => {
     }
   };
 
-  // Методы для управления игрой
-  const setPlayerName = (name: string) => {
-    playerName.value = name;
-  };
-
-  const gameStep = () => {
-    if (lives.value > 0) {
-      spawnMeteor();
-      moveMeteors();
-      updateFirstAidKitTimer();
-      spawnFirstAidKit();
-      moveFirstAidKit();
-      updateSpeedGame();
-    }
-  };
-
-  const updateSpeedGame = () => {
-    const elapsedMinutes = Math.floor(
-      (Date.now() - gameStartTime.value) / 60000
-    );
-    speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 15%
-  };
-
-  const resetGame = () => {
-    score.value = 0;
-    lives.value = 5;
-    meteors.value = [];
-    meteorId = 0;
-    gameStartTime.value = Date.now();
-    speedGame.value = 1;
-    loadResults();
-  };
-
   // Методы для работы с результатами
   const loadResults = () => {
     const savedResults = localStorage.getItem("gameResults");
@@ -194,15 +209,20 @@ export const useGameStore = defineStore("gameStore", () => {
     firstAidKit,
     gameResults,
     isGameOver,
+    isActiveGame,
     setPlayerName,
+    gameStep,
+    startGame,
+    updateSpeedGame,
+    endGame,
     resetGame,
     spawnMeteor,
-    gameStep,
+    moveMeteors,
     increaseCountForParachute,
+    updateFirstAidKitTimer,
     spawnFirstAidKit,
     moveFirstAidKit,
     boostHealthPoints,
-    updateSpeedGame,
     loadResults,
     saveResult,
   };
