@@ -15,6 +15,7 @@ import ResultsTable from "@/components/resultBoard/ResultsTable.vue";
 import BtnGameAgain from "@/components/resultBoard/BtnGameAgain.vue";
 import { useGameStore } from "@/stores/gameStore";
 import { useRouter } from "vue-router";
+import { onMounted } from "vue";
 
 const gameStore = useGameStore();
 const router = useRouter();
@@ -23,6 +24,10 @@ const playAgain = () => {
   gameStore.resetGame();
   router.push("/");
 };
+
+onMounted(() => {
+  gameStore.loadResults()
+})
 </script>
 
 <style scoped lang="scss">

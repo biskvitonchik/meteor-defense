@@ -85,7 +85,6 @@ export const useGameStore = defineStore("gameStore", () => {
     firstAidKit.value = null;
     nextFirstAidKitTime.value = null;
     isActiveGame.value = false;
-    loadResults();
   };
 
   // Методы для работы с метеорами
