@@ -1,41 +1,20 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-
-interface IMeteor {
-  id: number;
-  isBig: boolean;
-  x: number;
-  y: number;
-  hasParachute: boolean;
-  clickCount: number;
-  speed: number;
-  opacity: number;
-}
-
-interface IFirstAidKit {
-  x: number;
-  y: number;
-}
-
-interface IGameResult {
-  id: number;
-  playerName: string;
-  score: number;
-}
+import { Meteor, FirstAidKit, GameResult } from "@/types/types";
 
 export const useGameStore = defineStore("gameStore", () => {
   // Игровые состояния
   const playerName = ref<string>("");
   const score = ref<number>(0);
   const lives = ref<number>(5);
-  const meteors = ref<IMeteor[]>([]);
-  const firstAidKit = ref<IFirstAidKit | null>(null);
+  const meteors = ref<Meteor[]>([]);
+  const firstAidKit = ref<FirstAidKit | null>(null);
   const nextFirstAidKitTime = ref<number | null>(null);
   let meteorId = 0;
   const gameStartTime = ref<number | null>(null);
   const isActiveGame = ref(false);
   const speedGame = ref(1);
-  const gameResults = ref<IGameResult[]>([]);
+  const gameResults = ref<GameResult[]>([]);
   const isPaused = ref(false);
 
   // Вычисляемые свойства
@@ -194,7 +173,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const saveResult = () => {
-    const newResult: IGameResult = {
+    const newResult: GameResult = {
       id: Date.now(),
       playerName: playerName.value,
       score: score.value,
@@ -213,8 +192,8 @@ export const useGameStore = defineStore("gameStore", () => {
     firstAidKit,
     isActiveGame,
     gameResults,
-    isGameOver,
     isPaused,
+    isGameOver,
     setPlayerName,
     gameStep,
     startGame,
