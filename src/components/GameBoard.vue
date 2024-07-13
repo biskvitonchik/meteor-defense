@@ -21,12 +21,14 @@
 
 <script setup lang="ts">
 import { useGameStore } from "@/stores/gameStore";
-import { onMounted } from "vue";
-import InfoPanel from "./infoPanel/InfoPanel.vue";
+import { onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import InfoPanel from "@/components/infoPanel/InfoPanel.vue";
 import Meteor from "@/components/gameObjects/Meteor.vue";
 import FirstAidKit from "@/components/gameObjects/FirstAidKit.vue";
 
 const gameStore = useGameStore();
+const router = useRouter();
 
 let gameLoop: number;
 
@@ -38,6 +40,15 @@ const startGameLoop = () => {
 onMounted(() => {
   gameLoop = requestAnimationFrame(startGameLoop);
 });
+
+watch(
+  () => gameStore.isGameOver,
+  () => {
+    cancelAnimationFrame(gameLoop);
+    gameStore.saveResult();
+    router.push("/results");
+  }
+);
 </script>
 
 <style scoped lang="scss">

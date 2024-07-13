@@ -15,14 +15,14 @@ const props = defineProps<{
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/parachute-small.png');
+  background-image: url("/images/parachute-small.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   pointer-events: none;
 
   &--big {
-    background-image: url('/images/parachute-big.png');
+    background-image: url("/images/parachute-big.png");
   }
 }
 </style>

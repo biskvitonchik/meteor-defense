@@ -1,5 +1,5 @@
 <template>
-  <q-page class="score-board absolute text-white">
+  <q-page class="player-name absolute text-white">
     Игрок: {{ gameStore.playerName }}
   </q-page>
 </template>
@@ -11,7 +11,7 @@ const gameStore = useGameStore();
 </script>
 
 <style scoped lang="scss">
-.score-board {
+.player-name {
   top: 5px;
   left: 10px;
   font-size: 20px;

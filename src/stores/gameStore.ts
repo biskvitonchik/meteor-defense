@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 interface IMeteor {
   id: number;
@@ -17,7 +17,14 @@ interface IFirstAidKit {
   y: number;
 }
 
+interface IGameResult {
+  id: number;
+  playerName: string;
+  score: number;
+}
+
 export const useGameStore = defineStore("gameStore", () => {
+  // Игровые состояния
   const playerName = ref<string>("");
   const score = ref<number>(0);
   const lives = ref<number>(5);
@@ -28,8 +35,13 @@ export const useGameStore = defineStore("gameStore", () => {
   const gameStartTime = ref(Date.now());
   const speedGame = ref(1);
 
-  // метеор
+  // Результаты игры
+  const gameResults = ref<IGameResult[]>([]);
 
+  // Вычисляемые свойства
+  const isGameOver = computed(() => lives.value <= 0);
+
+  // Методы для работы с метеорами
   const spawnMeteor = () => {
     if (meteors.value.length < 10 && Math.random() < 0.02) {
       const isBig = Math.random() > 0.7;
@@ -64,8 +76,6 @@ export const useGameStore = defineStore("gameStore", () => {
     });
   };
 
-  // парашют
-
   const increaseCountForParachute = (id: number) => {
     const meteor = meteors.value.find((m) => m.id === id);
     if (meteor && !meteor.hasParachute) {
@@ -81,8 +91,7 @@ export const useGameStore = defineStore("gameStore", () => {
     }
   };
 
-  // аптечка
-
+  // Методы для работы с аптечкой
   const updateFirstAidKitTimer = () => {
     if (lives.value < 3 && !firstAidKit.value && !nextFirstAidKitTime.value) {
       nextFirstAidKitTime.value =
@@ -124,8 +133,7 @@ export const useGameStore = defineStore("gameStore", () => {
     }
   };
 
-  // игра
-
+  // Методы для управления игрой
   const setPlayerName = (name: string) => {
     playerName.value = name;
   };
@@ -141,6 +149,13 @@ export const useGameStore = defineStore("gameStore", () => {
     }
   };
 
+  const updateSpeedGame = () => {
+    const elapsedMinutes = Math.floor(
+      (Date.now() - gameStartTime.value) / 60000
+    );
+    speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 15%
+  };
+
   const resetGame = () => {
     score.value = 0;
     lives.value = 5;
@@ -148,11 +163,27 @@ export const useGameStore = defineStore("gameStore", () => {
     meteorId = 0;
     gameStartTime.value = Date.now();
     speedGame.value = 1;
+    loadResults();
   };
 
-  const updateSpeedGame = () => {
-    const elapsedMinutes = Math.floor((Date.now() - gameStartTime.value) / 60000);
-    speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 15%
+  // Методы для работы с результатами
+  const loadResults = () => {
+    const savedResults = localStorage.getItem("gameResults");
+    if (savedResults) {
+      gameResults.value = JSON.parse(savedResults);
+    }
+  };
+
+  const saveResult = () => {
+    const newResult: IGameResult = {
+      id: Date.now(),
+      playerName: playerName.value,
+      score: score.value,
+    };
+    gameResults.value.push(newResult);
+    gameResults.value.sort((a, b) => b.score - a.score);
+    gameResults.value = gameResults.value.slice(0, 10);
+    localStorage.setItem("gameResults", JSON.stringify(gameResults.value));
   };
 
   return {
@@ -161,6 +192,8 @@ export const useGameStore = defineStore("gameStore", () => {
     lives,
     meteors,
     firstAidKit,
+    gameResults,
+    isGameOver,
     setPlayerName,
     resetGame,
     spawnMeteor,
@@ -170,5 +203,7 @@ export const useGameStore = defineStore("gameStore", () => {
     moveFirstAidKit,
     boostHealthPoints,
     updateSpeedGame,
+    loadResults,
+    saveResult,
   };
 });
