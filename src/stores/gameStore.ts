@@ -173,6 +173,7 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const saveResult = () => {
+    loadResults();
     const newResult: GameResult = {
       id: Date.now(),
       playerName: playerName.value,
