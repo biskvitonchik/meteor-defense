@@ -11,7 +11,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const firstAidKit = ref<FirstAidKit | null>(null);
   const nextFirstAidKitTime = ref<number | null>(null);
   let meteorId = 0;
-  const gameStartTime = ref<number | null>(null);
+  const gameTime = ref<number>(0);
   const isActiveGame = ref(false);
   const speedGame = ref(1);
   const gameResults = ref<GameResult[]>([]);
@@ -25,8 +25,9 @@ export const useGameStore = defineStore("gameStore", () => {
     playerName.value = name;
   };
 
-  const gameStep = () => {
+  const gameStep = (deltaTime: number) => {
     if (isActiveGame.value && !isPaused.value && lives.value > 0) {
+      gameTime.value += deltaTime;
       spawnMeteor();
       moveMeteors();
       updateFirstAidKitTimer();
@@ -39,7 +40,6 @@ export const useGameStore = defineStore("gameStore", () => {
   const startGame = () => {
     resetGame();
     isActiveGame.value = true;
-    gameStartTime.value = Date.now();
   };
 
   const togglePause = () => {
@@ -47,12 +47,8 @@ export const useGameStore = defineStore("gameStore", () => {
   };
 
   const updateSpeedGame = () => {
-    if (gameStartTime.value) {
-      const elapsedMinutes = Math.floor(
-        (Date.now() - gameStartTime.value) / 60000
-      );
-      speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 0.15
-    }
+    const elapsedMinutes = Math.floor(gameTime.value / 60000);
+    speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 0.15
   };
 
   const endGame = () => {
@@ -64,11 +60,12 @@ export const useGameStore = defineStore("gameStore", () => {
     lives.value = 5;
     meteors.value = [];
     meteorId = 0;
-    gameStartTime.value = null;
+    gameTime.value = 0;
     speedGame.value = 1;
     firstAidKit.value = null;
     nextFirstAidKitTime.value = null;
     isActiveGame.value = false;
+    isPaused.value = false;
   };
 
   // Методы для работы с метеорами
@@ -126,7 +123,7 @@ export const useGameStore = defineStore("gameStore", () => {
   const updateFirstAidKitTimer = () => {
     if (lives.value < 3 && !firstAidKit.value && !nextFirstAidKitTime.value) {
       nextFirstAidKitTime.value =
-        Date.now() + 15000 + Math.floor(Math.random() * 30001); // дата + 15 сек + рандомно до 30 сек включительно = от 15 до 45 сек включительно
+        gameTime.value + 15000 + Math.floor(Math.random() * 30001); // дата + 15 сек + рандомно до 30 сек включительно = от 15 до 45 сек включительно
     }
   };
 
@@ -135,7 +132,7 @@ export const useGameStore = defineStore("gameStore", () => {
       lives.value < 3 &&
       !firstAidKit.value &&
       nextFirstAidKitTime.value &&
-      Date.now() >= nextFirstAidKitTime.value
+      gameTime.value >= nextFirstAidKitTime.value
     ) {
       firstAidKit.value = {
         x: Math.random() * (window.innerWidth - 50), // 50px - высота аптечки
