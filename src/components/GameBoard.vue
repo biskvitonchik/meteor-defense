@@ -41,11 +41,12 @@ const router = useRouter();
 const gameBoard = ref<HTMLElement | null>(null);
 
 let gameLoop: number;
+let lastTime = 0;
 
-const startGameLoop = () => {
-  if (!gameStore.isPaused) {
-    gameStore.gameStep();
-  }
+const startGameLoop = (currentTime: number) => {
+  const deltaTime = currentTime - lastTime;
+  gameStore.gameStep(deltaTime)
+  lastTime = currentTime
   gameLoop = requestAnimationFrame(startGameLoop);
 };
 
