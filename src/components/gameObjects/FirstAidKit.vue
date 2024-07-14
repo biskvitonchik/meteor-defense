@@ -1,7 +1,7 @@
 <template>
   <div
     class="first-aid-kit"
-    :style="{ top: `${y}px`, left: `${x}px` }"
+    :style="{ transform: `translate(${x}px, ${y}px)` }"
     @click="useFirstAidKit"
   ></div>
 </template>
@@ -24,6 +24,7 @@ const useFirstAidKit = () => {
 <style scoped lang="scss">
 .first-aid-kit {
   position: absolute;
+  top: 0;
   width: 50px;
   height: 50px;
   background-image: url("/images/first_aid_kit.png");
@@ -31,5 +32,6 @@ const useFirstAidKit = () => {
   background-size: contain;
   background-repeat: no-repeat;
   cursor: pointer;
+  will-change: transform
 }
 </style>

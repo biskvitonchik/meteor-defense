@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['meteor', { 'meteor--big': isBig }]"
-    :style="{ top: `${y}px`, left: `${x}px`, opacity }"
+    :style="{ transform: `translate(${x}px, ${y}px)`, opacity }"
     @click="handleClickForParachute"
   >
     <Parachute v-if="hasParachute" :is-big="isBig" />
@@ -33,12 +33,15 @@ const handleClickForParachute = () => {
 <style scoped lang="scss">
 .meteor {
   position: absolute;
+  top: 0;
   width: 50px;
   height: 50px;
   background-image: url("/images/meteorit-small.png");
   background-size: contain;
   background-repeat: no-repeat;
   cursor: pointer;
+  will-change: transform, opacity;
+  transition: opacity 0.3s ease;
 
   &--big {
     width: 80px;
