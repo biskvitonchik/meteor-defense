@@ -51,7 +51,7 @@ export const useGameStore = defineStore("gameStore", () => {
       const elapsedMinutes = Math.floor(
         (Date.now() - gameStartTime.value) / 60000
       );
-      speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 15%
+      speedGame.value = 1 + elapsedMinutes * 0.15; // каждую минуту скорость увеличивается на 0.15
     }
   };
 
